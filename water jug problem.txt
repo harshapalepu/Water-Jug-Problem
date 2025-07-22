@@ -1,0 +1,82 @@
+% --- State Space Representation ---
+% Each state is represented as state(JugA, JugB)
+% JugA: 4-litre capacity, JugB: 3-litre capacity
+
+% Initial state
+initial_state(state(0, 0)).
+
+% Goal: either jug contains exactly 2 liters
+goal_reached(state(2, _)).
+goal_reached(state(_, 2)).
+
+% --- Transitions (Actions) ---
+
+% Fill Jug A
+fill_a(state(_, B), state(4, B)).
+
+% Fill Jug B
+fill_b(state(A, _), state(A, 3)).
+
+% Empty Jug A
+empty_a(state(_, B), state(0, B)).
+
+% Empty Jug B
+empty_b(state(A, _), state(A, 0)).
+
+% Pour from A to B
+pour_a_to_b(state(A, B), state(NewA, NewB)) :-
+    CapB is 3,
+    Pour is min(A, CapB - B),
+    NewA is A - Pour,
+    NewB is B + Pour.
+
+% Pour from B to A
+pour_b_to_a(state(A, B), state(NewA, NewB)) :-
+    CapA is 4,
+    Pour is min(B, CapA - A),
+    NewA is A + Pour,
+    NewB is B - Pour.
+
+% --- Action Wrapper (with action names) ---
+move(S1, fill_a, S2) :- fill_a(S1, S2).
+move(S1, fill_b, S2) :- fill_b(S1, S2).
+move(S1, empty_a, S2) :- empty_a(S1, S2).
+move(S1, empty_b, S2) :- empty_b(S1, S2).
+move(S1, pour_a_to_b, S2) :- pour_a_to_b(S1, S2).
+move(S1, pour_b_to_a, S2) :- pour_b_to_a(S1, S2).
+
+% --- BFS Algorithm ---
+
+% Base case: goal reached
+bfs([[State | Path] | _], [State | Path]) :-
+    goal_reached(State).
+
+% BFS Step
+bfs([[State | Path] | Rest], Solution) :-
+    findall([NextState, State | Path],
+            (move(State, _, NextState),
+             \+ member(NextState, [State | Path])),
+            NewPaths),
+    append(Rest, NewPaths, Queue),
+    bfs(Queue, Solution).
+
+% Solve using BFS from initial state
+solve_bfs(SolutionPath) :-
+    initial_state(Initial),
+    bfs([[Initial]], RevPath),
+    reverse(RevPath, SolutionPath).
+
+% --- Display Path with Actions ---
+
+% Display path with action labels
+show_solution([_]).
+show_solution([S1, S2 | Rest]) :-
+    move(S1, Action, S2),
+    format('~w -> ~w~n', [S1, Action]),
+    show_solution([S2 | Rest]).
+
+% --- BFS Execution ---
+solve :-
+    solve_bfs(Path),
+    show_solution(Path),
+    format('Final State: ~w~n', [Path]).
