@@ -1,0 +1,53 @@
+
+Step-by-Step Code Execution in Words:
+
+1. Start with the Initial State
+
+* The initial state is defined as state(0, 0) — both jugs are empty.
+
+2. Call solve
+
+* When you run solve., it triggers solve_bfs(Path) to start the search.
+* It begins the Breadth-First Search (BFS) from the initial state.
+
+3. Perform BFS
+
+* BFS uses a queue to explore all possible moves from the current state.
+* It keeps track of visited states to avoid loops.
+
+4. Generate Next States
+
+* From the current state, Prolog checks all possible actions:
+
+  * Fill Jug A or Jug B
+  * Empty Jug A or Jug B
+  * Pour water from one jug to the other
+* Each valid action creates a new state.
+
+5. Check Goal
+
+* After generating a new state, it checks if the goal is reached:
+
+  * Either jug has exactly 2 liters (state(2, _) or state(_, 2)).
+* If not, the state is added to the queue to explore further.
+
+6. Repeat Until Solution Found
+
+* The process continues level by level, exploring all paths, until a goal state is reached.
+
+7. Reverse the Path
+
+* Once a goal is found, the path to it is reversed to show the steps from start to goal.
+
+8. Display the Solution
+
+* show_solution(Path) prints:
+
+  * Each state
+  * The action taken to move to the next state
+
+9. Print Final State
+
+* Finally, it prints the full solution path (states only) showing how to reach the goal.
+
+

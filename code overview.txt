@@ -1,0 +1,101 @@
+
+
+The code solves the Water Jug Problem using Artificial Intelligence (AI) techniques, Specifically, it:
+
+* Models water pouring using state space representation.
+* Uses Breadth-First Search (BFS) to find a solution.
+* Shows how to reach a state where either the 4-liter or 3-liter jug contains exactly 2 liters.
+
+
+
+Code Structure & Logic
+
+1. State Representation
+
+prolog
+state(JugA, JugB)
+
+
+Each state represents the current water levels in:
+
+* Jug A (4-liter capacity)
+* Jug B (3-liter capacity)
+
+
+
+2. Initial and Goal States
+
+prolog
+initial_state(state(0, 0)).
+goal_reached(state(2, _)).
+goal_reached(state(_, 2)).
+
+
+* Starts with both jugs empty.
+* Goal is to get exactly 2 liters in either jug.
+
+
+
+3. Transitions (Actions)
+
+These rules define what actions are allowed and how they change the state:
+
+| Action        | Code                                | Meaning                                            |
+| ------------- | ----------------------------------- | -------------------------------------------------- |
+| `fill_a`      | `fill_a(state(_, B), state(4, B))`  | Fill Jug A to 4 liters                             |
+| `fill_b`      | `fill_b(state(A, _), state(A, 3))`  | Fill Jug B to 3 liters                             |
+| `empty_a`     | `empty_a(state(_, B), state(0, B))` | Empty Jug A                                        |
+| `empty_b`     | `empty_b(state(A, _), state(A, 0))` | Empty Jug B                                        |
+| `pour_a_to_b` | `pour_a_to_b(state(A, B), ...)`     | Pour from Jug A to B until B is full or A is empty |
+| `pour_b_to_a` | `pour_b_to_a(state(A, B), ...)`     | Pour from Jug B to A until A is full or B is empty |
+
+These define the **state transition rules** of the water jug system.
+
+
+
+4. Action Wrapper
+
+prolog
+move(S1, Action, S2) :- action(S1, S2).
+
+
+* This lets the code associate each transition with an **action name**, so the final output can show what was done at each step.
+
+
+5. Breadth-First Search (BFS)
+
+prolog
+bfs(Queue, Solution)
+
+
+* Uses BFS to find the shortest sequence of steps from the initial state to a goal state.
+* Expands nodes level by level.
+* Prevents revisiting the same state in a path.
+
+---
+
+6. Solution Finding and Display
+
+prolog
+solve_bfs(Path).
+show_solution(Path).
+
+
+* Finds a valid path to the goal.
+* Shows the actions taken at each step.
+* Example output:
+
+  state(0, 0) -> fill_b
+  state(0, 3) -> pour_b_to_a
+  ...
+  Final State: [state(0, 0), ..., state(0, 2)]
+ 
+
+Key Concepts Used
+
+* Artificial Intelligence: Modeling problems using states and transitions.
+* State Space Search: Each state is a node, transitions are edges.
+* BFS Algorithm: Guarantees the shortest path to solution.
+* Logic Programming (Prolog): Uses rules, pattern matching, and backtracking.
+
+
